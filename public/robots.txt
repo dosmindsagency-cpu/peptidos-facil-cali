@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Péptidos Fácil Cali — independent platform
+Sitemap: https://peptidosfacilcali.com/sitemap.xml

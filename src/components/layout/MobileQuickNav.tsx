@@ -1,0 +1,42 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { MessageCircle, Calculator, CalendarDays, BookOpen } from "lucide-react";
+
+const items = [
+  { label: "Pep", href: "/pep", icon: MessageCircle },
+  { label: "Calculadoras", href: "/calculadoras", icon: Calculator },
+  { label: "Calendario", href: "/calendario", icon: CalendarDays },
+  { label: "Biblioteca", href: "/peptidos", icon: BookOpen },
+];
+
+export function MobileQuickNav() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  return (
+    <nav
+      className="fixed inset-x-0 bottom-0 z-30 border-t border-white/[0.06] bg-pf-navy-immersive/95 px-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2 backdrop-blur-xl md:hidden"
+      aria-label="Acceso rápido móvil"
+    >
+      <ul className="mx-auto flex max-w-md items-stretch justify-around gap-1">
+        {items.map((it) => (
+          <li key={it.href} className="flex-1">
+            <Link
+              href={it.href}
+              aria-label={it.label}
+              className="group flex h-14 flex-col items-center justify-center gap-0.5 rounded-2xl text-[10px] font-medium uppercase tracking-wide text-pf-ice/75 transition-colors hover:bg-white/[0.04] hover:text-white"
+            >
+              <span className="grid h-7 w-7 place-items-center">
+                <it.icon className="h-5 w-5" aria-hidden />
+              </span>
+              {it.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+      {mounted ? null : <span aria-hidden className="sr-only">cargando</span>}
+    </nav>
+  );
+}

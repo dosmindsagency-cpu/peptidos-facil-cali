@@ -1,0 +1,3 @@
+# Supabase migrations & local config (NOT committed to a public repo by default).
+# To keep the local CLI state in this repo for collaboration, ensure
+# .gitignore ignores secrets but commits migration SQL files.
