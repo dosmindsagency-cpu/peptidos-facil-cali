@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
-import { Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -9,12 +8,6 @@ import { siteConfig } from "@/config/site";
 import { organizationJsonLd } from "@/lib/seo/jsonld";
 import { getSiteUrl } from "@/env";
 
-const display = Instrument_Serif({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-display",
-  weight: "400",
-});
 const sans = Inter({
   subsets: ["latin"],
   display: "swap",
@@ -60,7 +53,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`${display.variable} ${sans.variable}`} suppressHydrationWarning>
+    <html lang="es" className={sans.variable} suppressHydrationWarning>
       <body className="min-h-screen bg-pf-navy-immersive font-sans text-[#eaf3fa] antialiased">
         <a
           href="#main"

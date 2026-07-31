@@ -2,19 +2,20 @@
 export const siteConfig = {
   name: "Péptidos Fácil Cali",
   shortName: "PFC",
-  region: "California",
-  tagline: "Educación premium, herramientas claras.",
+  region: "Cali",
+  tagline: "Información y herramientas sobre péptidos.",
   locale: "es",
   description:
-    "Plataforma modular en español para educación sobre péptidos, Pep AI, calculadoras, calendarios y descubrimiento de proveedores en California.",
+    "Información clara, herramientas educativas y recursos confiables para entender mejor el mundo de los péptidos.",
 } as const;
 
 export const primaryNav = [
-  { label: "Pep", href: "/pep" },
-  { label: "Calculadoras", href: "/calculadoras" },
-  { label: "Calendario", href: "/calendario" },
-  { label: "Biblioteca", href: "/peptidos" },
+  { label: "Inicio", href: "/" },
   { label: "Aprende", href: "/aprende" },
+  { label: "Calculadoras", href: "/calculadoras" },
+  { label: "Pep", href: "/pep" },
+  { label: "Dónde comprar", href: "/donde-comprar" },
+  { label: "Recursos", href: "/recursos" },
 ] as const;
 
 export const footerNav = [
