@@ -1,6 +1,26 @@
-import { FlatCompat } from "@eslint/eslintrc";
-const compat = new FlatCompat({ baseDirectory: import.meta.dirname });
+import nextConfig from "eslint-config-next/core-web-vitals";
+
+/**
+ * Péptidos Fácil Cali — flat ESLint config.
+ *
+ * eslint-config-next@16 ships a native flat-config array as its default
+ * export, so we spread it rather than wrapping it through FlatCompat
+ * (which would fail on the plugin config objects).
+ */
 export default [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
-  { rules: { "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }] } },
+  ...nextConfig,
+  {
+    rules: {
+      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+    },
+  },
+  {
+    ignores: [
+      ".next/**",
+      "node_modules/**",
+      "docs/**",
+      "**/*.config.{js,mjs,ts}",
+      "**/*.d.ts",
+    ],
+  },
 ];

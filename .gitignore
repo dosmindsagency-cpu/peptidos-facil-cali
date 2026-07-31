@@ -38,3 +38,4 @@ next-env.d.ts
 # Cache
 .turbo/
 .parcel-cache/
+.env*

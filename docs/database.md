@@ -2,6 +2,11 @@
 
 > Source SQL lives in `supabase/migrations/`. TypeScript mirror: `src/types/supabase.ts`.
 
+> **Security model (ADR-006):** "authenticated" is **not** an administrator.
+> All editorial / administrative operations on `content_items`, `providers`,
+> `profiles`, and `leads` happen via server-side code using the
+> `SUPABASE_SERVICE_ROLE_KEY`. See "RLS and policies" below.
+
 ## Tables (Phase 1)
 
 ### `profiles`
@@ -17,7 +22,8 @@
 
 **RLS**
 
-- `select` / `insert` / `update` / `delete` only on rows where `auth.uid() = id`.
+- `select` / `insert` / `update` only when `auth.uid() = id`.
+- `delete` policy intentionally **not** granted — only service-role can delete.
 
 ### `leads`
 
@@ -37,13 +43,12 @@
 | consent_at           | timestamptz              | required to accept insert          |
 | created_at           | timestamptz              |                                    |
 
-Indexes: `email`, `region`, `created_at desc`.
-
 **RLS**
 
-- `insert` allowed only from `anon` role AND when `consent_at is not null` — server endpoint must enforce consent before writing.
-- `select` limited to `authenticated` role.
-- No update / delete policy — leads are immutable once accepted.
+- **`anon`** is granted **INSERT only** with check `consent_at IS NOT NULL`.
+- **`authenticated`** is granted **nothing** — no SELECT, no INSERT, no UPDATE, no DELETE on `leads`.
+- All reading and administration goes through **service-role** server code (e.g. the future admin dashboard).
+- The RLS `enable row level security` is set; the absence of additional policies is the **deny by default** for those roles.
 
 ### `content_items`
 
@@ -61,8 +66,10 @@ Indexes: `email`, `region`, `created_at desc`.
 
 **RLS**
 
-- Public (anon/authenticated) can `select` only rows where `status = 'published'`.
-- Authenticated (admin tooling) has full CRUD via separate policy.
+- **`anon` + `authenticated`** are granted **SELECT only when `status = 'published'`**.
+- **`anon` + `authenticated`** are granted **nothing else** — no INSERT, no UPDATE, no DELETE.
+- All editorial operations (creating drafts, updating in-review content, publishing, archiving) flow through **service-role** server code only.
+- A future admin role system (e.g. JWT custom claims on `auth.users`) will be required before any authenticated user can edit content client-side. Until that ships, only the service-role key can write.
 
 ### `providers`
 
@@ -81,27 +88,44 @@ Indexes: `email`, `region`, `created_at desc`.
 
 **RLS**
 
-- Public sees only `active = true` AND `verification_status = 'verified'`.
-- Authenticated role: full CRUD for admin tooling.
+- **`anon` + `authenticated`** are granted **SELECT only when `active = true AND verification_status = 'verified'`**.
+- **`anon` + `authenticated`** are granted **nothing else**.
+- All provider lifecycle (create, update, deactivate, referral URL change, discount-code edit, deletion) is **service-role** server code.
+- **No** "generic authenticated CRUD" is granted.
 
 ## Storage buckets
 
-| Bucket            | Public | Writes                | Use                                          |
-| ----------------- | ------ | --------------------- | -------------------------------------------- |
-| bioverso-public   | ✅     | service-role only     | Approved anatomical / molecular assets       |
-| content-public    | ✅     | service-role only     | Article cover images and content assets      |
-| user-private      | ❌     | owner only            | Saved calendars, user uploads                |
+| Bucket            | Public | Writes                | Authenticated writes        | Use                                          |
+| ----------------- | ------ | --------------------- | --------------------------- | -------------------------------------------- |
+| bioverso-public   | ✅     | **service-role only** | **none**                    | Approved anatomical / molecular assets       |
+| content-public    | ✅     | **service-role only** | **none**                    | Article cover images and content assets      |
+| user-private      | ❌     | owner only (auth uid) | owner only (auth uid)       | Saved calendars, user uploads                |
+
+- **Public buckets**: read access via `bucket public=true`. Write access is achieved only via service-role server code. We intentionally write **zero** storage INSERT / UPDATE / DELETE policies for `bioverso-public` and `content-public` — that absence is the deny. Generic `authenticated` users cannot mutate public assets.
+- **`user-private`**: four policies (select / insert / update / delete) each requiring `auth.uid() = owner`. Anonymous role has no path to this bucket.
 
 Path conventions inside `bioverso-public`:
 - `anatomy/` · `organs/` · `cellular/` · `molecules/` · `peptides/` · `mechanisms/` · `backgrounds/` · `icons/` · `motion/`
 - File names: `pf-[category]-[subject]-[variant]-[aspect]-[version].png`
 
-## What's NOT in this phase
+## What is NOT in this phase
 
 - `peptide_dosing`, `protocol_*`, or any clinical/health tables.
 - Conversation persistence for Pep (Phase 2 — only after rate-limiting is final).
 - Email subscription tables (depends on provider, Phase 2+).
 - Analytics tables (Phase 3 — separate dataset, PII-free).
+- **A custom admin-role system.** Until that ships, any operation that needs elevated access happens server-side via the service-role key.
+
+## Future admin-role implementation (planned)
+
+When content authoring is ready:
+
+1. Add a column to `auth.users` (or a separate `app_admin_users` table joined by `auth.uid()`).
+2. Set a JWT `app_metadata.role = 'admin'` on the user.
+3. Replace the "absence of policy" pattern with policies that check `auth.jwt() ->> 'app_metadata' ->> 'role' = 'admin'` for actions beyond the published-content SELECT.
+4. Administrative UIs run server-side and pass through the service-role key OR through admin-role JWTs, never through anon/authenticated directly.
+
+This work belongs to a future ADR (proposed ADR-007) before any editor tooling ships.
 
 ## How migrations are applied
 
@@ -110,7 +134,14 @@ Path conventions inside `bioverso-public`:
 3. Repeat for `0002_storage_buckets.sql`.
 
 Local development (after Supabase CLI is added):
+
 ```bash
 supabase link --project-ref <ref>
 supabase db push
 ```
+
+## Next.js version + upgrade date
+
+- Foundation next.js: 15.4.4
+- Upgraded to **16.2.12** on 2026-07-30 in PR that also hardened RLS / storage policies
+- See `/docs/deployment.md` for the upgrade procedure.
