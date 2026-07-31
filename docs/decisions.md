@@ -87,6 +87,39 @@ public; `content_items` only show `status='published'` to public.
 
 ---
 
+## ADR-006 · Authenticated is not an administrator (RLS tightening)
+
+**Date.** 2026-07-30
+**Status.** Accepted.
+
+**Context.** The initial Phase 1 migrations granted the `authenticated`
+role broader CRUD on `leads`, `content_items`, and `providers` than the
+platform actually needs. This contradicts the spec's "no public admin
+routes" and "no unrestricted database writes" rules and assumes an admin
+role that does not yet exist. Until an explicit admin role system ships,
+the `authenticated` role should never be a route to privileged actions.
+
+**Decision.**
+
+- `profiles`: select / insert / update only when `auth.uid() = id`. No `delete` policy.
+- `leads`: only `anon INSERT` is granted, only when `consent_at IS NOT NULL`. Authenticated role has no SELECT / UPDATE / DELETE on `leads`.
+- `content_items`: public SELECT only when `status = 'published'`. No insert / update / delete for `anon` or `authenticated`.
+- `providers`: public SELECT only when `active = true AND verification_status = 'verified'`. No insert / update / delete for `anon` or `authenticated`.
+- All editorial and administrative operations are routed through server-only `createAdminSupabaseClient()`.
+
+Storage mirrors the same model:
+- Public buckets (`bioverso-public`, `content-public`) have **zero** `anon` or `authenticated` policies for INSERT / UPDATE / DELETE. Absence of policy = deny.
+- `user-private` keeps owner-only policies (auth.uid = owner) on SELECT / INSERT / UPDATE / DELETE.
+
+**Consequences.**
+
+- ✅ Defense in depth: even if an attacker compromises an authenticated account they cannot reach another user's profile, edit content, mutate providers, or read leads.
+- ✅ Editorial flows must be built explicitly server-side with the service-role key (already the case — `admin.ts` exists).
+- ⚠ Future admin UI (e.g. a CMS) cannot edit from the browser without first introducing a custom admin role (planned ADR-007).
+- ⚠ Reporting / analytics on `leads` queries must use service-role server endpoints, not direct DB connections.
+
+---
+
 ## ADR-005 · Dosing & clinical content excluded from Phase 1
 
 **Date.** 2026-07-29

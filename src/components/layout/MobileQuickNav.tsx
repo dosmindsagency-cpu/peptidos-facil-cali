@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { MessageCircle, Calculator, CalendarDays, BookOpen } from "lucide-react";
 
 const items = [
@@ -12,9 +11,6 @@ const items = [
 ];
 
 export function MobileQuickNav() {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-
   return (
     <nav
       className="fixed inset-x-0 bottom-0 z-30 border-t border-white/[0.06] bg-pf-navy-immersive/95 px-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2 backdrop-blur-xl md:hidden"
@@ -36,7 +32,6 @@ export function MobileQuickNav() {
           </li>
         ))}
       </ul>
-      {mounted ? null : <span aria-hidden className="sr-only">cargando</span>}
     </nav>
   );
 }

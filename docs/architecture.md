@@ -1,5 +1,9 @@
 # Architecture
 
+> Framework: **Next.js 16.2.12** (App Router) + React 19.2 + TypeScript 5.7 strict.
+> Upgraded from 15.4.4 on 2026-07-30. ESLint via flat config
+> (`eslint-config-next@16.2.12`).
+
 ## Layering
 
 ```
@@ -66,6 +70,30 @@ Routes are defined flatly under their public paths (`/pep`, `/calculadoras`, etc
 - `Permissions-Policy: camera=(), microphone=(), geolocation=()`
 
 In Phase 2 we add: `Content-Security-Policy` (after analytics & any third-party origins are finalized).
+
+## Trust boundaries — authenticated is not administrator
+
+The `authenticated` role in Supabase is **not** an administrator.
+
+A server-side flow that wants to do any of the following must use the
+service-role key (`SUPABASE_SERVICE_ROLE_KEY`):
+
+- Editing / publishing / drafting `content_items`
+- Creating / updating / verifying / deactivating `providers`
+- Reading or updating any row of `leads`
+- Editing or deleting any row of `profiles`
+
+All such operations go through trusted server-only code paths under
+`src/lib/supabase/admin.ts`. Authenticated users can:
+
+- Read `profiles` only when `auth.uid() = id`.
+- Read `content_items` only when `status = 'published'`.
+- Read `providers` only when `active = true AND verification_status = 'verified'`.
+- Mutate nothing outside `user-private` storage (their own objects).
+
+A future ADR (proposed **ADR-007**) will introduce a custom admin role for
+client-side editorial work. Until that ships, **only server-side
+service-role code** mutates anything beyond `user-private` storage.
 
 ## Subdomain strategy (Phase 2+)
 
