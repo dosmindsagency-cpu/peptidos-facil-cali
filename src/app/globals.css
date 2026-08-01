@@ -41,12 +41,16 @@
   .button-secondary { border: 1px solid rgba(148,163,184,.25); background: rgba(255,255,255,.045); color: #e0f2fe; }
   .button-secondary:hover { border-color: rgba(103,232,249,.55); background: rgba(34,211,238,.1); transform: translateY(-2px); }
   .hero-grid { background: radial-gradient(circle at 85% 20%, rgba(59,130,246,.18), transparent 34%), radial-gradient(circle at 20% 80%, rgba(139,92,246,.1), transparent 30%), #081522; }
+  .hero-art { position: absolute; inset: 0; pointer-events: none; }
+  .hero-art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, #081522 0%, rgba(8,21,34,.92) 32%, rgba(8,21,34,.32) 68%, rgba(8,21,34,.72) 100%), linear-gradient(180deg, rgba(8,21,34,.08) 45%, #081522 100%); }
+  .hero-art-image { object-fit: cover; object-position: 72% center; opacity: .68; }
+  .hero-art-mobile { display: none; object-position: 78% center; }
   .hero-gradient-text { background: linear-gradient(110deg, #e0f2fe 10%, #67e8f9 55%, #a78bfa); background-clip: text; color: transparent; }
   .hero-network { position: absolute; inset: 0; opacity: .5; background-image: radial-gradient(circle at 12% 30%, rgba(103,232,249,.65) 0 2px, transparent 3px), radial-gradient(circle at 75% 15%, rgba(167,139,250,.55) 0 2px, transparent 3px), linear-gradient(122deg, transparent 0 48%, rgba(56,189,248,.09) 49% 49.2%, transparent 49.3%); background-size: 180px 180px, 240px 240px, 100% 100%; pointer-events: none; }
   .section-intro h2 { margin-top: .65rem; max-width: 38rem; font-size: clamp(1.9rem, 4vw, 3rem); line-height: 1.08; letter-spacing: -.04em; }
   .section-eyebrow { color: #67e8f9; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .16em; }
   .eyebrow { display: inline-flex; align-items: center; gap: .65rem; border: 1px solid rgba(103,232,249,.2); border-radius: 999px; background: rgba(34,211,238,.07); padding: .55rem .8rem; color: #bae6fd; font-size: .72rem; font-weight: 600; letter-spacing: .05em; }
-  .home-card, .goal-card, .trust-card, .tool-card { border: 1px solid rgba(148,163,184,.14); background: rgba(15,37,57,.72); border-radius: 1.2rem; transition: border-color .2s ease, transform .2s ease, background-color .2s ease; }
+  .home-card, .goal-card, .trust-card, .tool-card { min-width: 0; overflow-wrap: anywhere; border: 1px solid rgba(148,163,184,.14); background: rgba(15,37,57,.72); border-radius: 1.2rem; transition: border-color .2s ease, transform .2s ease, background-color .2s ease; }
   .home-card:hover, .goal-card:hover, .trust-card:hover, .tool-card:hover { border-color: rgba(103,232,249,.38); background: rgba(17,47,73,.9); }
   .home-card:hover, .goal-card:hover { transform: translateY(-3px); }
   .goal-card { min-height: 150px; padding: 1.1rem; }
@@ -54,6 +58,12 @@
   .tool-card { padding: 1.5rem; }
   .icon-box { display: grid; height: 2.65rem; width: 2.65rem; place-items: center; border-radius: .8rem; background: rgba(34,211,238,.12); color: #67e8f9; }
   .badge { border-radius: 999px; background: rgba(103,232,249,.1); padding: .35rem .6rem; color: #a5f3fc; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+}
+
+@media (max-width: 1023px) {
+  .hero-art-desktop { display: none; }
+  .hero-art-mobile { display: block; }
+  .hero-art::after { background: linear-gradient(180deg, rgba(8,21,34,.45) 0%, rgba(8,21,34,.72) 46%, #081522 100%), linear-gradient(90deg, rgba(8,21,34,.9) 0%, rgba(8,21,34,.2) 100%); }
 }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }

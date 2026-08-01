@@ -16,12 +16,7 @@ export function SiteFooter() {
                   <path d="M16 4v3M16 25v3M4 16h3M25 16h3" />
                 </svg>
               </span>
-              <span className="leading-tight">
-                <span className="block text-sm font-semibold text-white">{siteConfig.name}</span>
-                <span className="block text-[10px] uppercase tracking-[0.18em] text-pf-ice/70">
-                  {siteConfig.region}
-                </span>
-              </span>
+              <span className="leading-tight text-sm font-semibold text-white">{siteConfig.name}</span>
             </div>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-pf-ice/70">
               {siteConfig.description}
@@ -56,13 +51,9 @@ export function SiteFooter() {
 
         <div className="mt-12 flex flex-col gap-3 border-t border-white/[0.06] pt-6 text-xs text-pf-ice/55 sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} {siteConfig.name}.</p>
-          <p>Fundación técnica · {publicEnvLabel()}</p>
+          <p>Contenido educativo para tomar decisiones informadas.</p>
         </div>
       </Container>
     </footer>
   );
-}
-
-function publicEnvLabel() {
-  return process.env.NEXT_PUBLIC_ENVIRONMENT ?? "development";
 }

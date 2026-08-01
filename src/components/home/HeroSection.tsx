@@ -1,10 +1,21 @@
 import Link from "next/link";
+import Image from "next/image";
+import { existsSync } from "node:fs";
 import { ArrowRight, MessageCircle, ShieldCheck } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { PepPreview } from "@/components/home/PepPreview";
 
 export function HeroSection() {
+  const desktopHeroAsset = "/bioverso/hero/hero-anatomy-desktop.webp";
+  const mobileHeroAsset = "/bioverso/hero/hero-anatomy-mobile.webp";
+  const hasDesktopHeroAsset = existsSync(`${process.cwd()}/public${desktopHeroAsset}`);
+  const hasMobileHeroAsset = existsSync(`${process.cwd()}/public${mobileHeroAsset}`);
+
   return <section className="hero-grid relative overflow-hidden border-b border-white/[0.06]" aria-labelledby="hero-title">
+    {(hasDesktopHeroAsset || hasMobileHeroAsset) && <div className="hero-art" aria-hidden="true">
+      {hasDesktopHeroAsset && <Image src={desktopHeroAsset} alt="" fill priority sizes="(max-width: 1023px) 0px, 52vw" className="hero-art-image hero-art-desktop" />}
+      {hasMobileHeroAsset && <Image src={mobileHeroAsset} alt="" fill priority sizes="(max-width: 1023px) 100vw, 0px" className="hero-art-image hero-art-mobile" />}
+    </div>}
     <div className="hero-network" aria-hidden="true"><span /><span /><span /><span /><span /><span /></div>
     <Container width="wide" className="relative grid gap-12 pb-20 pt-16 sm:pb-28 sm:pt-24 lg:grid-cols-[1fr_0.92fr] lg:items-center lg:gap-20 lg:pt-28">
       <div className="max-w-2xl">
