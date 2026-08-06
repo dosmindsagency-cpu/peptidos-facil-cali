@@ -1,15 +1,7 @@
 export type PepResponseKind = "educational" | "summary" | "comparison" | "calculator" | "error";
 
-export type PepSource = {
-  label: string;
-  href: string;
-};
-
-export type PepNextAction = {
-  label: string;
-  href?: string;
-  prompt?: string;
-};
+export type PepSource = { label: string; href: string };
+export type PepNextAction = { label: string; href?: string; prompt?: string };
 
 export type PepResponse = {
   kind: PepResponseKind;
@@ -22,7 +14,5 @@ export type PepResponse = {
   status?: "fallback" | "connected";
 };
 
-export type PepChatRequest = {
-  message: string;
-  history?: Array<{ role: "user" | "assistant"; content: string }>;
-};
+export type PepChatMessage = { role: "user" | "assistant"; content: string };
+export type PepChatRequest = { message: string; history?: PepChatMessage[]; stream?: boolean };

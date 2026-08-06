@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { ArrowRight, BookOpen, Calculator, CheckCircle2, GitCompareArrows, HeartPulse, ShieldCheck, Sparkles } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 
@@ -19,8 +20,8 @@ export function PepContext() {
   return <section className="pep-context-section py-16 sm:py-24" aria-labelledby="context-title"><Container width="wide"><div className="context-panel context-panel-rich"><div className="max-w-xl"><p className="section-eyebrow">Pep muestra el contexto</p><h2 id="context-title" className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">No sólo respuestas. Mejores preguntas.</h2><p className="mt-4 text-base leading-7 text-slate-300">Cada respuesta debe ayudarte a distinguir lo que se sabe, lo que se discute y lo que todavía necesita más evidencia.</p></div><div className="context-response"><div className="flex items-center gap-2 text-xs text-cyan-200"><CheckCircle2 className="h-4 w-4" />Contexto incluido en la respuesta</div><div className="context-response-grid mt-5"><div><p className="context-label">Evidencia</p><p className="mt-2 text-sm text-slate-300">Limitada, moderada o sólida según la fuente disponible.</p></div><div><p className="context-label">Seguridad</p><p className="mt-2 text-sm text-slate-300">Riesgos, límites y cuándo consultar a un profesional.</p></div><div><p className="context-label">Regulación</p><p className="mt-2 text-sm text-slate-300">Aprobado, investigacional, off-label o no aprobado.</p></div><div><p className="context-label">Fuentes</p><p className="mt-2 text-sm text-slate-300">Enlaces para revisar el contexto por ti mismo.</p></div></div></div></div></Container></section>;
 }
 
-export function FinalChatCta() {
-  return <section className="final-chat-section border-t border-white/[0.06] py-16 sm:py-24" aria-labelledby="final-cta-title"><Container width="narrow" className="text-center"><div className="final-pep-mark"><Sparkles className="h-5 w-5" /></div><h2 id="final-cta-title" className="mt-5 text-3xl font-semibold tracking-tight text-white sm:text-4xl">¿Qué quieres entender ahora?</h2><p className="mx-auto mt-3 max-w-lg text-slate-400">La conversación continúa cuando tengas tu próxima pregunta.</p><a href="#pep-chat" className="button-primary mx-auto mt-7 w-fit">Volver a Pep <ArrowRight className="h-4 w-4" /></a></Container></section>;
+export function FinalChatCta({ workspace }: { workspace: ReactNode }) {
+  return <section className="final-chat-section border-t border-white/[0.06] py-16 sm:py-24" aria-labelledby="final-cta-title"><Container width="narrow"><div className="text-center"><div className="final-pep-mark"><Sparkles className="h-5 w-5" /></div><h2 id="final-cta-title" className="mt-5 text-3xl font-semibold tracking-tight text-white sm:text-4xl">¿Qué quieres entender ahora?</h2><p className="mx-auto mt-3 max-w-lg text-slate-400">La conversación continúa cuando tengas tu próxima pregunta.</p></div><div className="mt-8">{workspace}</div></Container></section>;
 }
 
 export const comparisonIcon = GitCompareArrows;

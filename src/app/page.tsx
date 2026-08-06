@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { HeroSection } from "@/components/home/HeroSection";
 import { FinalChatCta, PepContext, PepExplains, PepToolsFlow } from "@/components/home/HomeSections";
+import { PepWorkspace } from "@/components/pep/PepWorkspace";
 import { siteConfig } from "@/config/site";
 import { getSiteUrl } from "@/env";
 import { organizationJsonLd, websiteJsonLd } from "@/lib/seo/jsonld";
@@ -14,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
-  return <><HeroSection /><PepExplains /><PepToolsFlow /><PepContext /><FinalChatCta /><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([organizationJsonLd(), websiteJsonLd()]) }} /></>;
+  return <><HeroSection /><PepExplains /><PepToolsFlow /><PepContext /><FinalChatCta workspace={<PepWorkspace compact />} /><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([organizationJsonLd(), websiteJsonLd()]) }} /></>;
 }
