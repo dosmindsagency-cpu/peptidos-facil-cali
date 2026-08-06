@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   applicationName: siteConfig.name,
   authors: [{ name: `${siteConfig.name} Editorial` }],
   generator: "Next.js",
-  keywords: ["péptidos", "GLP-1", "salud metabólica", "California", "educación", "español"],
+  keywords: ["péptidos", "Pep AI", "salud metabólica", "Cali", "educación", "español"],
   alternates: { canonical: "/", languages: { es: "/" } },
   openGraph: {
     type: "website",

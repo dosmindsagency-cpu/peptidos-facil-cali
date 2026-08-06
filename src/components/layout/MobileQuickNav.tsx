@@ -4,11 +4,11 @@ import Link from "next/link";
 import { MessageCircle, Calculator, BookOpen, ShoppingBag, House } from "lucide-react";
 
 const items = [
-  { label: "Inicio", href: "/", icon: House },
-  { label: "Aprende", href: "/aprende", icon: BookOpen },
-  { label: "Pep", href: "/pep", icon: MessageCircle },
+  { label: "Pep", href: "/#pep-chat", icon: MessageCircle },
+  { label: "Ciencia", href: "/aprende", icon: BookOpen },
   { label: "Calculadoras", href: "/calculadoras", icon: Calculator },
   { label: "Comprar", href: "/donde-comprar", icon: ShoppingBag },
+  { label: "Inicio", href: "/", icon: House },
 ];
 
 export function MobileQuickNav() {
