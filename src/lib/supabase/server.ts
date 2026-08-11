@@ -13,7 +13,7 @@ type CookieWrite = {
 
 /**
  * Server Supabase client. Uses the user's session cookie so RLS policies
- * apply. NEVER returns or stores the service role key.
+ * apply. NEVER returns or stores the secret key.
  */
 export async function createServerSupabaseClient() {
   assertServerOnly("supabase/server");
