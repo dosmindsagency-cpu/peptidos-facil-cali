@@ -14,7 +14,7 @@ function requireClientEnv(name: keyof PublicEnv): string {
 
 export type PublicEnv = {
   NEXT_PUBLIC_SUPABASE_URL: string;
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: string;
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: string;
   NEXT_PUBLIC_SITE_URL: string;
   NEXT_PUBLIC_ENVIRONMENT: "development" | "preview" | "production";
 };
@@ -25,7 +25,7 @@ const validEnvironment: PublicEnv["NEXT_PUBLIC_ENVIRONMENT"] =
 
 export const publicEnv: PublicEnv = {
   NEXT_PUBLIC_SUPABASE_URL: requireClientEnv("NEXT_PUBLIC_SUPABASE_URL"),
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: requireClientEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: requireClientEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"),
   NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL ?? "https://peptidosfacilcali.com",
   // Retained for local tooling; never rendered in public components.
   NEXT_PUBLIC_ENVIRONMENT: validEnvironment,
