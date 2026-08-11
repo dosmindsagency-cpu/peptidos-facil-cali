@@ -1,25 +1,14 @@
 import type { Metadata } from "next";
-import { PhasePlaceholder } from "@/components/ui/PhasePlaceholder";
+import { PepWorkspace } from "@/components/pep/PepWorkspace";
+import { Container } from "@/components/ui/Container";
 
 export const metadata: Metadata = {
-  title: "Pep",
-  description:
-    "Pep es el entry point conversacional de Péptidos Fácil Cali. Disponible como parte del módulo Pep.",
+  title: "Pep AI",
+  description: "Explora péptidos con Pep AI, contexto de seguridad y fuentes educativas.",
   alternates: { canonical: "/pep" },
   robots: { index: false, follow: true },
 };
 
 export default function PepPage() {
-  return (
-    <PhasePlaceholder
-      title="Pep"
-      description="Entry point conversacional. La integración backend se entrega en Fase 2 con un adaptador seguro y rate-limited."
-      features={[
-        "Explicar péptidos y compararlos en lenguaje claro",
-        "Guiar hacia herramientas y contenido educativo",
-        "Contextualizar regiones y proveedores verificables",
-        "Limitarse estrictamente a educación — sin diagnósticos ni prescripciones",
-      ]}
-    />
-  );
+  return <Container width="wide" className="py-8 sm:py-12"><div className="mx-auto max-w-5xl"><div className="mb-6"><p className="section-eyebrow">Conversación educativa</p><h1 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">Explora con Pep AI</h1><p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400">Pregunta, compara y revisa fuentes con una conversación diseñada para mantener el contexto de seguridad.</p></div><PepWorkspace /></div></Container>;
 }

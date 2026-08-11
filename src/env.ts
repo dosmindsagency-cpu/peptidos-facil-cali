@@ -19,13 +19,16 @@ export type PublicEnv = {
   NEXT_PUBLIC_ENVIRONMENT: "development" | "preview" | "production";
 };
 
+const environment = process.env.NEXT_PUBLIC_ENVIRONMENT;
+const validEnvironment: PublicEnv["NEXT_PUBLIC_ENVIRONMENT"] =
+  environment === "preview" || environment === "production" ? environment : "development";
+
 export const publicEnv: PublicEnv = {
   NEXT_PUBLIC_SUPABASE_URL: requireClientEnv("NEXT_PUBLIC_SUPABASE_URL"),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: requireClientEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
   NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL ?? "https://peptidosfacilcali.com",
-  NEXT_PUBLIC_ENVIRONMENT:
-    (process.env.NEXT_PUBLIC_ENVIRONMENT as PublicEnv["NEXT_PUBLIC_ENVIRONMENT"]) ??
-    "development",
+  // Retained for local tooling; never rendered in public components.
+  NEXT_PUBLIC_ENVIRONMENT: validEnvironment,
 };
 
 export function getSiteUrl() {

@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { MessageCircle, Calculator, CalendarDays, BookOpen } from "lucide-react";
+import { MessageCircle, Calculator, BookOpen, ShoppingBag, House } from "lucide-react";
 
 const items = [
-  { label: "Pep", href: "/pep", icon: MessageCircle },
+  { label: "Pep", href: "/#pep-chat", icon: MessageCircle },
+  { label: "Ciencia", href: "/aprende", icon: BookOpen },
   { label: "Calculadoras", href: "/calculadoras", icon: Calculator },
-  { label: "Calendario", href: "/calendario", icon: CalendarDays },
-  { label: "Biblioteca", href: "/peptidos", icon: BookOpen },
+  { label: "Comprar", href: "/donde-comprar", icon: ShoppingBag },
+  { label: "Inicio", href: "/", icon: House },
 ];
 
 export function MobileQuickNav() {

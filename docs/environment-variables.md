@@ -26,8 +26,10 @@
 
 | Key                                 | Phase | Notes                                   |
 | ----------------------------------- | ----- | --------------------------------------- |
-| `PEP_AI_API_URL`                    | P2    | Server-only                             |
-| `PEP_AI_API_KEY`                    | P2    | **Server-only**, rate-limited endpoint   |
+| `OPENROUTER_API_KEY`                | P2    | **Server-only**, required by `/api/pep`  |
+| `OPENROUTER_MODEL`                  | P2    | Server-only optional model override      |
+| `PEP_AI_API_URL`                    | P2    | Legacy optional adapter                  |
+| `PEP_AI_API_KEY`                    | P2    | Legacy optional adapter key              |
 | `LEAD_WEBHOOK_TOKEN`                | P2    | Server-only HMAC for outbound CRM        |
 | `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`      | P3    | Optional analytics                      |
 | `AFFILIATE_SIGNING_SECRET`          | P3    | Server-only, signs referral URLs        |

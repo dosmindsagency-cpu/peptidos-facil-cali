@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { footerNav, siteConfig } from "@/config/site";
@@ -9,19 +10,10 @@ export function SiteFooter() {
         <div className="grid gap-10 lg:grid-cols-[1.1fr_2fr]">
           <div>
             <div className="flex items-center gap-2.5">
-              <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-pf-petroleum to-pf-navy ring-1 ring-white/[0.12]">
-                <svg viewBox="0 0 32 32" className="h-5 w-5 text-white" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                  <path d="M8 22C12 16 20 16 24 22" />
-                  <circle cx="16" cy="13" r="3" />
-                  <path d="M16 4v3M16 25v3M4 16h3M25 16h3" />
-                </svg>
+              <span className="grid h-9 w-9 place-items-center rounded-xl bg-white ring-1 ring-white/[0.12]">
+                <Image src="/brand/core/pf-mark-master.png" alt="" width={28} height={28} className="h-7 w-7 object-contain" />
               </span>
-              <span className="leading-tight">
-                <span className="block text-sm font-semibold text-white">{siteConfig.name}</span>
-                <span className="block text-[10px] uppercase tracking-[0.18em] text-pf-ice/70">
-                  {siteConfig.region}
-                </span>
-              </span>
+              <span className="leading-tight"><span className="block text-sm font-semibold text-white">Péptidos Fácil</span><span className="block text-[10px] uppercase tracking-[0.18em] text-pf-ice/70">Cali</span></span>
             </div>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-pf-ice/70">
               {siteConfig.description}
@@ -56,13 +48,9 @@ export function SiteFooter() {
 
         <div className="mt-12 flex flex-col gap-3 border-t border-white/[0.06] pt-6 text-xs text-pf-ice/55 sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} {siteConfig.name}.</p>
-          <p>Fundación técnica · {publicEnvLabel()}</p>
+          <p>Contenido educativo para tomar decisiones informadas.</p>
         </div>
       </Container>
     </footer>
   );
-}
-
-function publicEnvLabel() {
-  return process.env.NEXT_PUBLIC_ENVIRONMENT ?? "development";
 }
