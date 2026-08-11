@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+
 import "./globals.css";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -8,12 +8,6 @@ import { siteConfig } from "@/config/site";
 import { organizationJsonLd } from "@/lib/seo/jsonld";
 import { getSiteUrl } from "@/env";
 
-const sans = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-sans",
-  weight: ["300", "400", "500", "600", "700"],
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
@@ -53,7 +47,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={sans.variable} suppressHydrationWarning>
+    <html lang="es" suppressHydrationWarning>
       <body className="min-h-screen bg-pf-navy-immersive font-sans text-[#eaf3fa] antialiased">
         <a
           href="#main"

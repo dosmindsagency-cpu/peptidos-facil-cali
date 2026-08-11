@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --color-pf-navy: #0f2539; --color-pf-navy-immersive: #081522; --color-pf-navy-secondary: #0b1d2d;
   --color-pf-petroleum: #38bdf8; --color-pf-blue: #3b82f6; --color-pf-violet: #8b5cf6; --color-pf-cyan: #22d3ee;
   --color-pf-ice: #e5f0f9; --color-pf-ice-soft: #dcecf7; --color-bg: #081522; --color-bg-elevated: #0f2539; --color-text: #eaf3fa;
