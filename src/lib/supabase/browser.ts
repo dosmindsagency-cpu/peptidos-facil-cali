@@ -15,12 +15,12 @@ type CookieWrite = {
  * a privileged session. All writes pass through RLS.
  */
 export function createBrowserSupabaseClient() {
-  if (!publicEnv.NEXT_PUBLIC_SUPABASE_URL || !publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+  if (!publicEnv.NEXT_PUBLIC_SUPABASE_URL || !publicEnv.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) {
     // Placeholder until real credentials are configured.
     // All real network requests will be rejected by Supabase, surfacing a clear error.
     return createBrowserClient<Database>(
       "https://placeholder.supabase.invalid",
-      "placeholder-anon-key",
+      "placeholder-publishable-key",
       {
         cookies: {
           getAll: () => [],
@@ -31,7 +31,7 @@ export function createBrowserSupabaseClient() {
   }
   return createBrowserClient<Database>(
     publicEnv.NEXT_PUBLIC_SUPABASE_URL,
-    publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    publicEnv.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     {
       cookies: {
         getAll: () => {
