@@ -23,8 +23,6 @@ export async function requestPepProvider(history: PepChatMessage[], message: str
     headers: {
       Authorization: `Bearer ${key}`,
       "Content-Type": "application/json",
-      "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL ?? "https://peptidosfacilcali.com",
-      "X-Title": "Péptidos Fácil Cali — Pep AI",
     },
     body: JSON.stringify({ model: PEP_MODEL, messages: providerMessages(history, message), stream, temperature: 0.2, max_tokens: 900 }),
     signal,
