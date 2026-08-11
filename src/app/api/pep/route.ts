@@ -39,7 +39,9 @@ export async function POST(request: Request) {
     if (!answer) return NextResponse.json({ error: "Pep recibió una respuesta vacía.", code: "EMPTY_RESPONSE" }, { status: 502, headers: jsonHeaders });
     return NextResponse.json({ kind: "educational", title: "Respuesta de Pep", answer, keyPoints: [], safetyNote: "Pep AI ofrece información educativa y no sustituye la evaluación de un profesional de salud.", sources: [], nextActions: [], status: "connected" }, { headers: jsonHeaders });
   } catch (error) {
-    const code = error instanceof DOMException && error.name === "AbortError" ? "TIMEOUT" : "PROVIDER_UNAVAILABLE";
+    const errorName = error instanceof Error ? error.name : "UnknownError";
+    const code = errorName === "AbortError" ? "TIMEOUT" : "PROVIDER_UNAVAILABLE";
+    console.error(`[pep] provider request failed: ${errorName}`);
     return NextResponse.json({ error: code === "TIMEOUT" ? "Pep tardó demasiado en responder. Inténtalo de nuevo." : "Pep no está disponible temporalmente.", code }, { status: 504, headers: jsonHeaders });
   } finally {
     clearTimeout(timeout);
