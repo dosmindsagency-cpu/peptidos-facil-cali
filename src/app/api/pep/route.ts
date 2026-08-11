@@ -20,39 +20,6 @@ export async function POST(request: Request) {
   if (!message) return NextResponse.json({ error: "Escribe una pregunta para Pep." }, { status: 400, headers: jsonHeaders });
   if (message.length > 1200) return NextResponse.json({ error: "La pregunta es demasiado larga." }, { status: 400, headers: jsonHeaders });
 
-  if (new URL(request.url).searchParams.get("diagnostic") === "provider") {
-    const diagnosticController = new AbortController();
-    const diagnosticTimeout = setTimeout(() => diagnosticController.abort(), 30_000);
-    try {
-      const upstream = await requestPepProvider([], "¿Qué es un péptido?", false, diagnosticController.signal);
-      const body = await upstream.json().catch(() => ({})) as { error?: { code?: string; message?: string } };
-      return NextResponse.json({ key: hasPepProvider() ? "PRESENT" : "MISSING", upstreamStatus: upstream.status, upstreamCode: body.error?.code ?? null, upstreamMessage: body.error?.message?.slice(0, 240) ?? null, success: upstream.ok }, { status: upstream.ok ? 200 : 502, headers: jsonHeaders });
-    } catch (error) {
-      const errorName = error instanceof Error ? error.name : "UnknownError";
-      return NextResponse.json({ key: hasPepProvider() ? "PRESENT" : "MISSING", upstreamStatus: 0, error: errorName, timeout: errorName === "AbortError" }, { status: 504, headers: jsonHeaders });
-    } finally { clearTimeout(diagnosticTimeout); }
-  }
-
-  if (new URL(request.url).searchParams.get("diagnostic") === "direct") {
-    const key = process.env.OPENROUTER_API_KEY;
-    if (!key) return NextResponse.json({ key: "MISSING" }, { status: 503, headers: jsonHeaders });
-    const controller = new AbortController();
-    const diagnosticTimeout = setTimeout(() => controller.abort(), 30_000);
-    try {
-      const upstream = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "openai/gpt-4o-mini", messages: [{ role: "user", content: "Responde solamente: conexión funcionando" }], stream: false, max_tokens: 64 }),
-        signal: controller.signal,
-      });
-      if (upstream.ok) return NextResponse.json({ key: "PRESENT", upstreamStatus: upstream.status, success: true }, { headers: jsonHeaders });
-      const upstreamBody = await upstream.json().catch(() => ({})) as { error?: { code?: string; message?: string } };
-      return NextResponse.json({ key: "PRESENT", upstreamStatus: upstream.status, upstreamCode: upstreamBody.error?.code ?? "UNKNOWN", upstreamMessage: (upstreamBody.error?.message ?? "Upstream rejected request").slice(0, 240), success: false }, { status: 502, headers: jsonHeaders });
-    } catch (error) {
-      const errorName = error instanceof Error ? error.name : "UnknownError";
-      return NextResponse.json({ key: "PRESENT", upstreamStatus: 0, timeout: errorName === "AbortError", error: "UPSTREAM_UNAVAILABLE" }, { status: 504, headers: jsonHeaders });
-    } finally { clearTimeout(diagnosticTimeout); }
-  }
 
   const wantsStream = body.stream !== false;
   if (!hasPepProvider()) {
