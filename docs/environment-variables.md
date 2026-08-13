@@ -7,8 +7,8 @@
 | Key                              | Required | Server-only | Purpose                                          |
 | -------------------------------- | -------- | ----------- | ------------------------------------------------ |
 | `NEXT_PUBLIC_SUPABASE_URL`       | ✅       | no          | Supabase project URL (browser-safe)              |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY`  | ✅       | no          | Anon key for browser requests                    |
-| `SUPABASE_SERVICE_ROLE_KEY`      | ✅       | **YES**     | Admin operations. NEVER commit.                  |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | ✅  | no          | Publishable key for browser requests            |
+| `SUPABASE_SECRET_KEY`             | ✅       | **YES**     | Server/admin operations. NEVER commit.          |
 | `NEXT_PUBLIC_SITE_URL`           | ✅       | no          | Canonical origin used in metadata / sitemap      |
 | `NEXT_PUBLIC_ENVIRONMENT`        | ✅       | no          | `development` \| `preview` \| `production`       |
 
@@ -17,8 +17,8 @@
 | Key                              | Used in                                      |
 | -------------------------------- | -------------------------------------------- |
 | `NEXT_PUBLIC_SUPABASE_URL`       | `src/lib/supabase/browser.ts`, `server.ts`, `admin.ts` |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY`  | `src/lib/supabase/browser.ts`, `server.ts`   |
-| `SUPABASE_SERVICE_ROLE_KEY`      | `src/lib/supabase/admin.ts` (only)           |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | `src/lib/supabase/browser.ts`, `server.ts` |
+| `SUPABASE_SECRET_KEY`             | `src/lib/supabase/admin.ts` (only)           |
 | `NEXT_PUBLIC_SITE_URL`           | `src/env.ts` → `metadataBase`, sitemap, OG   |
 | `NEXT_PUBLIC_ENVIRONMENT`        | `SiteFooter` shows the active environment    |
 

@@ -13,22 +13,22 @@ type CookieWrite = {
 
 /**
  * Server Supabase client. Uses the user's session cookie so RLS policies
- * apply. NEVER returns or stores the service role key.
+ * apply. NEVER returns or stores the secret key.
  */
 export async function createServerSupabaseClient() {
   assertServerOnly("supabase/server");
-  if (!publicEnv.NEXT_PUBLIC_SUPABASE_URL || !publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+  if (!publicEnv.NEXT_PUBLIC_SUPABASE_URL || !publicEnv.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) {
     // Placeholder server client when env not configured. Reads return empty.
     return createServerClient<Database>(
       "https://placeholder.supabase.invalid",
-      "placeholder-anon-key",
+      "placeholder-publishable-key",
       { cookies: { getAll: () => [], setAll: () => undefined } },
     );
   }
   const cookieStore = await cookies();
   return createServerClient<Database>(
     publicEnv.NEXT_PUBLIC_SUPABASE_URL,
-    publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    publicEnv.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     {
       cookies: {
         getAll: () => cookieStore.getAll(),
