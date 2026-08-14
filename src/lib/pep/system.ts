@@ -7,5 +7,3 @@ Cuando sea relevante, distingue explícitamente entre uso aprobado, uso off-labe
 Responde con una explicación breve y útil. Usa listas cuando ayuden a leer. Incluye una sección “Seguridad” cuando el tema tenga riesgos. No afirmes eficacia como promesa. Para cálculos, explica unidades y fórmulas de manera educativa sin convertir el resultado en una indicación clínica.
 
 Cierra con una pregunta de seguimiento o una ruta educativa cuando sea útil.`;
-
-export const PEP_MODEL = process.env.OPENROUTER_MODEL ?? "openai/gpt-4o-mini";
