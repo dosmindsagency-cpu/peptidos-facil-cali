@@ -31,6 +31,7 @@ export async function POST(request: Request) {
 
   const parsedRequest = await parsePepRequest(request);
   if (!parsedRequest.success) {
+    console.warn("[pep] request validation failed", parsedRequest.diagnostic);
     return NextResponse.json(
       { error: parsedRequest.message, code: parsedRequest.code },
       { status: parsedRequest.status, headers: jsonHeaders },

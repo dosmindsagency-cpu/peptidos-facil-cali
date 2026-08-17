@@ -94,6 +94,7 @@ describe("PEP request validation", () => {
       success: false,
       status: 400,
       code: "INVALID_REQUEST",
+      diagnostic: { reason: "invalid_json" },
     });
 
     const oversized = await parsePepRequest(
@@ -107,6 +108,7 @@ describe("PEP request validation", () => {
       success: false,
       status: 413,
       code: "PAYLOAD_TOO_LARGE",
+      diagnostic: { reason: "payload_size" },
     });
   });
 });

@@ -1,4 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { PEP_MAX_ASSISTANT_HISTORY_CHARS } from "@/lib/pep/config";
 
 const provider = vi.hoisted(() => ({
   hasPepProvider: vi.fn(() => false),
@@ -11,6 +13,7 @@ vi.mock("@/lib/pep/provider", () => provider);
 import { POST } from "@/app/api/pep/route";
 
 let requestNumber = 0;
+let consoleWarn: ReturnType<typeof vi.spyOn>;
 
 function pepRequest(body: string | Record<string, unknown>) {
   requestNumber += 1;
@@ -27,7 +30,10 @@ function pepRequest(body: string | Record<string, unknown>) {
 describe("POST /api/pep", () => {
   beforeEach(() => {
     provider.hasPepProvider.mockReturnValue(false);
+    consoleWarn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
   });
+
+  afterEach(() => consoleWarn.mockRestore());
 
   it("returns a safe validation failure for malformed JSON", async () => {
     const response = await POST(pepRequest("{"));
@@ -47,6 +53,34 @@ describe("POST /api/pep", () => {
     );
 
     expect(response.status).toBe(400);
+  });
+
+  it("logs only structured validation diagnostics", async () => {
+    const sensitiveContent = "private-conversation-marker";
+    const response = await POST(
+      pepRequest({
+        message: "Pregunta",
+        history: [
+          {
+            role: "assistant",
+            content:
+              sensitiveContent +
+              "x".repeat(PEP_MAX_ASSISTANT_HISTORY_CHARS + 1),
+          },
+        ],
+      }),
+    );
+    const body = await response.json();
+    const logged = JSON.stringify(consoleWarn.mock.calls);
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      error: "Solicitud inválida.",
+      code: "INVALID_REQUEST",
+    });
+    expect(logged).toContain("history.0.content");
+    expect(logged).toContain("too_big");
+    expect(logged).not.toContain(sensitiveContent);
   });
 
   it("returns the existing fallback when no provider is configured", async () => {

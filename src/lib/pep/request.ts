@@ -1,41 +1,9 @@
 import { z } from "zod";
 
-import {
-  PEP_MAX_HISTORY_CHARS,
-  PEP_MAX_HISTORY_MESSAGES,
-  PEP_MAX_QUESTION_CHARS,
-  PEP_MAX_REQUEST_BYTES,
-} from "@/lib/pep/config";
+import { PEP_MAX_REQUEST_BYTES } from "@/lib/pep/config";
+import { pepRequestSchema } from "@/lib/pep/conversation";
 
-const historyMessageSchema = z.object({
-  role: z.enum(["user", "assistant"]),
-  content: z.string().trim().min(1).max(PEP_MAX_QUESTION_CHARS),
-});
-
-export const pepRequestSchema = z
-  .object({
-    message: z.string().trim().min(1).max(PEP_MAX_QUESTION_CHARS),
-    history: z
-      .array(historyMessageSchema)
-      .max(PEP_MAX_HISTORY_MESSAGES)
-      .default([]),
-    stream: z.boolean().default(true),
-  })
-  .strict()
-  .superRefine((request, context) => {
-    const historyCharacters = request.history.reduce(
-      (total, message) => total + message.content.length,
-      0,
-    );
-
-    if (historyCharacters > PEP_MAX_HISTORY_CHARS) {
-      context.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "History is too large",
-        path: ["history"],
-      });
-    }
-  });
+export { pepRequestSchema } from "@/lib/pep/conversation";
 
 export type ValidatedPepRequest = z.infer<typeof pepRequestSchema>;
 
@@ -46,21 +14,57 @@ type PepRequestParseResult =
       status: 400 | 413;
       code: "INVALID_REQUEST" | "PAYLOAD_TOO_LARGE";
       message: string;
+      diagnostic: PepRequestDiagnostic;
     };
 
-const invalidRequest: PepRequestParseResult = {
-  success: false,
-  status: 400,
-  code: "INVALID_REQUEST",
-  message: "Solicitud inválida.",
+export type PepRequestDiagnostic = {
+  reason: "body_read" | "invalid_json" | "schema" | "payload_size";
+  issues?: Array<{ rule: string; path: string; limit?: number }>;
 };
+
+function invalidRequest(
+  diagnostic: PepRequestDiagnostic,
+): PepRequestParseResult {
+  return {
+    success: false,
+    status: 400,
+    code: "INVALID_REQUEST",
+    message: "Solicitud inválida.",
+    diagnostic,
+  };
+}
 
 const oversizedRequest: PepRequestParseResult = {
   success: false,
   status: 413,
   code: "PAYLOAD_TOO_LARGE",
   message: "La solicitud es demasiado grande.",
+  diagnostic: { reason: "payload_size" },
 };
+
+function safeIssue(
+  issue: z.ZodIssue,
+): NonNullable<PepRequestDiagnostic["issues"]>[number] {
+  const path = issue.path.length > 0 ? issue.path.join(".") : "$";
+
+  if (issue.code === z.ZodIssueCode.too_big) {
+    return { rule: "too_big", path, limit: Number(issue.maximum) };
+  }
+  if (issue.code === z.ZodIssueCode.too_small) {
+    return { rule: "too_small", path, limit: Number(issue.minimum) };
+  }
+  if (issue.code === z.ZodIssueCode.custom) {
+    const params = issue.params as
+      { rule?: unknown; limit?: unknown } | undefined;
+    return {
+      rule: typeof params?.rule === "string" ? params.rule : "custom",
+      path,
+      ...(typeof params?.limit === "number" ? { limit: params.limit } : {}),
+    };
+  }
+
+  return { rule: issue.code, path };
+}
 
 export async function parsePepRequest(
   request: Request,
@@ -77,7 +81,7 @@ export async function parsePepRequest(
   try {
     rawBody = await request.text();
   } catch {
-    return invalidRequest;
+    return invalidRequest({ reason: "body_read" });
   }
 
   if (new TextEncoder().encode(rawBody).byteLength > PEP_MAX_REQUEST_BYTES) {
@@ -88,9 +92,14 @@ export async function parsePepRequest(
   try {
     body = JSON.parse(rawBody);
   } catch {
-    return invalidRequest;
+    return invalidRequest({ reason: "invalid_json" });
   }
 
   const result = pepRequestSchema.safeParse(body);
-  return result.success ? { success: true, data: result.data } : invalidRequest;
+  return result.success
+    ? { success: true, data: result.data }
+    : invalidRequest({
+        reason: "schema",
+        issues: result.error.issues.map(safeIssue),
+      });
 }
